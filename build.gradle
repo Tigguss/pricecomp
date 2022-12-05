@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '2.7.7-SNAPSHOT'
+	id 'org.springframework.boot' version '2.7.5'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
@@ -38,6 +38,25 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'org.glassfish:javax.el:3.0.0'
+
+
+	implementation "org.springframework.boot:spring-boot-starter-mail"
+	implementation "org.springframework.boot:spring-boot-starter-validation"
+	implementation "org.jboss.aerogear:aerogear-otp-java:1.0.0"
+	implementation "org.springframework.boot:spring-boot-starter-security"
+	implementation "org.thymeleaf.extras:thymeleaf-extras-springsecurity5"
+	implementation "javax.servlet:jstl:1.2"
+	implementation "org.passay:passay:1.0"
+	implementation 'com.google.guava:guava:20.0'
+	implementation "com.github.ua-parser:uap-java:1.4.0"
+	implementation "com.maxmind.geoip2:geoip2:2.15.0"
+	testImplementation "io.rest-assured:rest-assured"
+	testImplementation "org.junit.platform:junit-platform-runner"
+	implementation "net.logstash.logback:logstash-logback-encoder:4.8"
+	implementation "org.springframework.boot:spring-boot-configuration-processor"
+	implementation "nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect"
+
 }
 
 tasks.named('test') {
