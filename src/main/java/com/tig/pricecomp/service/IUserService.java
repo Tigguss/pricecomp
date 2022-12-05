@@ -3,7 +3,6 @@ package com.tig.pricecomp.service;
 import com.tig.pricecomp.persistence.model.NewLocationToken;
 import com.tig.pricecomp.persistence.model.PasswordResetToken;
 import com.tig.pricecomp.persistence.model.User;
-import com.tig.pricecomp.persistence.model.VerificationToken;
 import com.tig.pricecomp.web.dto.UserDto;
 
 import java.io.UnsupportedEncodingException;
@@ -14,17 +13,9 @@ public interface IUserService {
 
     User registerNewUserAccount(UserDto accountDto);
 
-    User getUser(String verificationToken);
-
     void saveRegisteredUser(User user);
 
     void deleteUser(User user);
-
-    void createVerificationTokenForUser(User user, String token);
-
-    VerificationToken getVerificationToken(String VerificationToken);
-
-    VerificationToken generateNewVerificationToken(String token);
 
     void createPasswordResetTokenForUser(User user, String token);
 
@@ -39,8 +30,6 @@ public interface IUserService {
     void changeUserPassword(User user, String password);
 
     boolean checkIfValidOldPassword(User user, String password);
-
-    String validateVerificationToken(String token);
 
     String generateQRUrl(User user) throws UnsupportedEncodingException;
 

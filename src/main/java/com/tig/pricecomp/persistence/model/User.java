@@ -38,7 +38,7 @@ public class User {
     public User() {
         super();
         this.secret = Base32.random();
-        this.enabled = false;
+        this.enabled = true;
     }
 
     public Long getId() {

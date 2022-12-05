@@ -1,8 +1,6 @@
 package com.tig.pricecomp.web.controller;
 
 import com.tig.pricecomp.persistence.model.User;
-import com.tig.pricecomp.persistence.model.VerificationToken;
-import com.tig.pricecomp.registration.OnRegistrationCompleteEvent;
 import com.tig.pricecomp.security.ISecurityUserService;
 import com.tig.pricecomp.service.IUserService;
 import com.tig.pricecomp.web.dto.PasswordDto;
@@ -12,13 +10,11 @@ import com.tig.pricecomp.web.util.GenericResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,9 +43,6 @@ public class RegistrationRestController {
     private JavaMailSender mailSender;
 
     @Autowired
-    private ApplicationEventPublisher eventPublisher;
-
-    @Autowired
     private Environment env;
 
     public RegistrationRestController() {
@@ -63,17 +56,7 @@ public class RegistrationRestController {
 
         final User registered = userService.registerNewUserAccount(accountDto);
         userService.addUserLocation(registered, getClientIP(request));
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), getAppUrl(request)));
         return new GenericResponse("success");
-    }
-
-    // User activation - verification
-    @GetMapping("/user/resendRegistrationToken")
-    public GenericResponse resendRegistrationToken(final HttpServletRequest request, @RequestParam("token") final String existingToken) {
-        final VerificationToken newToken = userService.generateNewVerificationToken(existingToken);
-        final User user = userService.getUser(newToken.getToken());
-        mailSender.send(constructResendVerificationTokenEmail(getAppUrl(request), request.getLocale(), newToken, user));
-        return new GenericResponse(messages.getMessage("message.resendToken", null, request.getLocale()));
     }
 
     // Reset password
@@ -129,12 +112,6 @@ public class RegistrationRestController {
     }
 
     // ============== NON-API ============
-
-    private SimpleMailMessage constructResendVerificationTokenEmail(final String contextPath, final Locale locale, final VerificationToken newToken, final User user) {
-        final String confirmationUrl = contextPath + "/registrationConfirm.html?token=" + newToken.getToken();
-        final String message = messages.getMessage("message.resendToken", null, locale);
-        return constructEmail("Resend Registration Token", message + " \r\n" + confirmationUrl, user);
-    }
 
     private SimpleMailMessage constructResetTokenEmail(final String contextPath, final Locale locale, final String token, final User user) {
         final String url = contextPath + "/user/changePassword?token=" + token;

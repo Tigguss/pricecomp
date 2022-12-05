@@ -3,7 +3,6 @@ package com.tig.pricecomp.web.controller;
 import com.tig.pricecomp.captcha.CaptchaServiceV3;
 import com.tig.pricecomp.captcha.ICaptchaService;
 import com.tig.pricecomp.persistence.model.User;
-import com.tig.pricecomp.registration.OnRegistrationCompleteEvent;
 import com.tig.pricecomp.service.IUserService;
 import com.tig.pricecomp.web.dto.UserDto;
 import com.tig.pricecomp.web.util.GenericResponse;
@@ -62,7 +61,6 @@ public class RegistrationCaptchaController {
         LOGGER.debug("Registering user account with information: {}", accountDto);
 
         final User registered = userService.registerNewUserAccount(accountDto);
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), getAppUrl(request)));
         return new GenericResponse("success");
     }
     
