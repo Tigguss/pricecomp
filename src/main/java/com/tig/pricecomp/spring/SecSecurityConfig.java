@@ -4,7 +4,6 @@ import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.tig.pricecomp.persistence.dao.UserRepository;
 import com.tig.pricecomp.security.CustomRememberMeServices;
-import com.tig.pricecomp.security.location.DifferentLocationChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -151,8 +150,5 @@ public class SecSecurityConfig {
         return new HttpSessionEventPublisher();
     }
 
-    @Bean
-    public DifferentLocationChecker differentLocationChecker() {
-        return new DifferentLocationChecker();
-    }
+
 }
