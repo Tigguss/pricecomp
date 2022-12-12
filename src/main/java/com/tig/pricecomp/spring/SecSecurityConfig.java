@@ -4,8 +4,6 @@ import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.tig.pricecomp.persistence.dao.UserRepository;
 import com.tig.pricecomp.security.CustomRememberMeServices;
-import com.tig.pricecomp.security.google2fa.CustomAuthenticationProvider;
-import com.tig.pricecomp.security.google2fa.CustomWebAuthenticationDetailsSource;
 import com.tig.pricecomp.security.location.DifferentLocationChecker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +33,6 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 import java.io.File;
 import java.io.IOException;
 
-@ComponentScan(basePackages = { "com.baeldung.security" })
 // @ImportResource({ "classpath:webSecurityConfig.xml" })
 @EnableWebSecurity
 public class SecSecurityConfig {
@@ -52,19 +49,11 @@ public class SecSecurityConfig {
     @Autowired
     private AuthenticationFailureHandler authenticationFailureHandler;
 
-    @Autowired
-    private CustomWebAuthenticationDetailsSource authenticationDetailsSource;
+
 
     @Autowired
     private UserRepository userRepository;
 
-
-    @Bean
-    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-            .authenticationProvider(authProvider())
-            .build();
-    }
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -93,7 +82,6 @@ public class SecSecurityConfig {
             .failureUrl("/login?error=true")
             .successHandler(myAuthenticationSuccessHandler)
             .failureHandler(authenticationFailureHandler)
-            .authenticationDetailsSource(authenticationDetailsSource)
             .permitAll()
             .and()
             .sessionManagement()
@@ -119,14 +107,7 @@ public class SecSecurityConfig {
 
     // beans
 
-    @Bean
-    public DaoAuthenticationProvider authProvider() {
-        final CustomAuthenticationProvider authProvider = new CustomAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(encoder());
-        authProvider.setPostAuthenticationChecks(differentLocationChecker());
-        return authProvider;
-    }
+
 
     @Bean
     public PasswordEncoder encoder() {
