@@ -1,6 +1,5 @@
 package com.tig.pricecomp.service;
 
-import com.tig.pricecomp.persistence.model.NewLocationToken;
 import com.tig.pricecomp.persistence.model.PasswordResetToken;
 import com.tig.pricecomp.persistence.model.User;
 import com.tig.pricecomp.web.dto.UserDto;
@@ -36,8 +35,6 @@ public interface IUserService {
     User updateUser2FA(boolean use2FA);
 
     List<String> getUsersFromSessionRegistry();
-
-    NewLocationToken isNewLoginLocation(String username, String ip);
 
     String isValidNewLocationToken(String token);
 
