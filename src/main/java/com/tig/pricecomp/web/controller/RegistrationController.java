@@ -1,19 +1,11 @@
 package com.tig.pricecomp.web.controller;
 
-import com.tig.pricecomp.persistence.model.Privilege;
-import com.tig.pricecomp.persistence.model.Role;
-import com.tig.pricecomp.persistence.model.User;
 import com.tig.pricecomp.security.ISecurityUserService;
 import com.tig.pricecomp.service.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -24,12 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.util.Collection;
-import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 public class RegistrationController {
@@ -131,36 +119,4 @@ public class RegistrationController {
         }
         return "redirect:/login?lang=" + locale.getLanguage();
     }
-
-    // ============== NON-API ============
-
-    public void authWithoutPassword(User user) {
-
-        List<Privilege> privileges = user.getRoles()
-                .stream()
-                .map(Role::getPrivileges)
-                .flatMap(Collection::stream)
-                .distinct()
-                .collect(Collectors.toList());
-
-        List<GrantedAuthority> authorities = privileges.stream()
-                .map(p -> new SimpleGrantedAuthority(p.getName()))
-                .collect(Collectors.toList());
-
-        Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-
-    private String getAppUrl(HttpServletRequest request) {
-        return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-    }
-
-    private final String getClientIP(HttpServletRequest request) {
-        final String xfHeader = request.getHeader("X-Forwarded-For");
-        if (xfHeader == null) {
-            return request.getRemoteAddr();
-        }
-        return xfHeader.split(",")[0];
-    }
-
 }

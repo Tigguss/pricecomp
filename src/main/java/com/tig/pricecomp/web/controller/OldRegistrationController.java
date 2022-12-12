@@ -4,7 +4,6 @@ import com.tig.pricecomp.persistence.model.PasswordResetToken;
 import com.tig.pricecomp.persistence.model.User;
 import com.tig.pricecomp.service.IUserService;
 import com.tig.pricecomp.web.dto.UserDto;
-import com.tig.pricecomp.web.error.UserAlreadyExistException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +20,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.UUID;
@@ -67,27 +63,6 @@ public class OldRegistrationController {
         model.addAttribute("user", accountDto);
         return "registration";
     }
-
-
-    @PostMapping("/user/registration")
-    public ModelAndView registerUserAccount(@ModelAttribute("user") @Valid final UserDto userDto, final HttpServletRequest request, final Errors errors) {
-        LOGGER.debug("Registering user account with information: {}", userDto);
-
-        try {
-            userService.registerNewUserAccount(userDto);
-        } catch (final UserAlreadyExistException uaeEx) {
-            ModelAndView mav = new ModelAndView("registration", "user", userDto);
-            String errMessage = messages.getMessage("message.regError", null, request.getLocale());
-            mav.addObject("message", errMessage);
-            return mav;
-        } catch (final RuntimeException ex) {
-            LOGGER.warn("Unable to register user", ex);
-            return new ModelAndView("emailError", "user", userDto);
-        }
-        return new ModelAndView("successRegister", "user", userDto);
-    }
-
-
 
     @PostMapping("/user/resetPassword")
     public String resetPassword(final HttpServletRequest request, final Model model, @RequestParam("email") final String userEmail) {
