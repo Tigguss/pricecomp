@@ -1,6 +1,5 @@
 package com.tig.pricecomp;
 
-import com.tig.pricecomp.persistence.connections.Connect;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
