@@ -30,9 +30,6 @@ public class UserService implements IUserService {
     private UserRepository userRepository;
 
     @Autowired
-    private PasswordResetTokenRepository passwordTokenRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -52,10 +49,6 @@ public class UserService implements IUserService {
     @Autowired
     private Environment env;
 
-    public static final String TOKEN_INVALID = "invalidToken";
-    public static final String TOKEN_EXPIRED = "expired";
-    public static final String TOKEN_VALID = "valid";
-
     public static String QR_PREFIX = "https://chart.googleapis.com/chart?chs=200x200&chld=M%%7C0&cht=qr&chl=";
     public static String APP_NAME = "SpringRegistration";
 
@@ -72,7 +65,6 @@ public class UserService implements IUserService {
         user.setLastName(accountDto.getLastName());
         user.setPassword(passwordEncoder.encode(accountDto.getPassword()));
         user.setEmail(accountDto.getEmail());
-        user.setUsing2FA(accountDto.isUsing2FA());
         user.setRoles(Arrays.asList(roleRepository.findByName("ROLE_USER")));
         return userRepository.save(user);
     }
@@ -83,21 +75,8 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void deleteUser(final User user) {
+    public void deleteUser(User user) {
 
-        final PasswordResetToken passwordToken = passwordTokenRepository.findByUser(user);
-
-        if (passwordToken != null) {
-            passwordTokenRepository.delete(passwordToken);
-        }
-
-        userRepository.delete(user);
-    }
-
-    @Override
-    public void createPasswordResetTokenForUser(final User user, final String token) {
-        final PasswordResetToken myToken = new PasswordResetToken(token, user);
-        passwordTokenRepository.save(myToken);
     }
 
     @Override
@@ -105,15 +84,6 @@ public class UserService implements IUserService {
         return userRepository.findByEmail(email);
     }
 
-    @Override
-    public PasswordResetToken getPasswordResetToken(final String token) {
-        return passwordTokenRepository.findByToken(token);
-    }
-
-    @Override
-    public Optional<User> getUserByPasswordResetToken(final String token) {
-        return Optional.ofNullable(passwordTokenRepository.findByToken(token) .getUser());
-    }
 
     @Override
     public Optional<User> getUserByID(final long id) {
@@ -136,18 +106,6 @@ public class UserService implements IUserService {
         return QR_PREFIX + URLEncoder.encode(String.format("otpauth://totp/%s:%s?secret=%s&issuer=%s", APP_NAME, user.getEmail(), user.getSecret(), APP_NAME), "UTF-8");
     }
 
-    @Override
-    public User updateUser2FA(boolean use2FA) {
-        final Authentication curAuth = SecurityContextHolder.getContext()
-            .getAuthentication();
-        User currentUser = (User) curAuth.getPrincipal();
-        currentUser.setUsing2FA(use2FA);
-        currentUser = userRepository.save(currentUser);
-        final Authentication auth = new UsernamePasswordAuthenticationToken(currentUser, currentUser.getPassword(), curAuth.getAuthorities());
-        SecurityContextHolder.getContext()
-            .setAuthentication(auth);
-        return currentUser;
-    }
 
     private boolean emailExists(final String email) {
         return userRepository.findByEmail(email) != null;
@@ -168,17 +126,5 @@ public class UserService implements IUserService {
                 }
             }).collect(Collectors.toList());
     }
-
-
-    @Override
-    public String isValidNewLocationToken(String token) {
-        return null;
-    }
-
-    @Override
-    public void addUserLocation(User user, String ip) {
-
-    }
-
 
 }

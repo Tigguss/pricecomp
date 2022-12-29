@@ -63,7 +63,7 @@ public class OldRegistrationController {
         model.addAttribute("user", accountDto);
         return "registration";
     }
-
+/*
     @PostMapping("/user/resetPassword")
     public String resetPassword(final HttpServletRequest request, final Model model, @RequestParam("email") final String userEmail) {
         final User user = userService.findUserByEmail(userEmail);
@@ -89,30 +89,7 @@ public class OldRegistrationController {
         model.addAttribute("message", messages.getMessage("message.resetPasswordEmail", null, request.getLocale()));
         return "redirect:/login.html?lang=" + request.getLocale().getLanguage();
     }
-
-    @GetMapping("/user/changePassword")
-    public String changePassword(final HttpServletRequest request, final Model model, @RequestParam("id") final long id, @RequestParam("token") final String token) {
-        final Locale locale = request.getLocale();
-
-        final PasswordResetToken passToken = userService.getPasswordResetToken(token);
-        if (passToken == null || passToken.getUser().getId() != id) {
-            final String message = messages.getMessage("auth.message.invalidToken", null, locale);
-            model.addAttribute("message", message);
-            return "redirect:/login.html?lang=" + locale.getLanguage();
-        }
-
-        final Calendar cal = Calendar.getInstance();
-        if ((passToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            model.addAttribute("message", messages.getMessage("auth.message.expired", null, locale));
-            return "redirect:/login.html?lang=" + locale.getLanguage();
-        }
-
-        final Authentication auth = new UsernamePasswordAuthenticationToken(passToken.getUser(), null, userDetailsService.loadUserByUsername(passToken.getUser().getEmail()).getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-
-        return "redirect:/updatePassword.html?lang=" + locale.getLanguage();
-    }
-
+*/
     @PostMapping("/user/savePassword")
     @PreAuthorize("hasRole('READ_PRIVILEGE')")
     public String savePassword(final HttpServletRequest request, final Model model, @RequestParam("password") final String password) {

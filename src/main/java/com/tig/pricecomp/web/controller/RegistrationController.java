@@ -1,17 +1,13 @@
 package com.tig.pricecomp.web.controller;
 
-import com.tig.pricecomp.security.ISecurityUserService;
 import com.tig.pricecomp.service.IUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -26,9 +22,6 @@ public class RegistrationController {
 
     @Autowired
     private IUserService userService;
-
-    @Autowired
-    private ISecurityUserService securityUserService;
 
     @Autowired
     private MessageSource messages;
@@ -67,32 +60,6 @@ public class RegistrationController {
         return new ModelAndView("badUser", model);
     }
 
-    @GetMapping("/user/changePassword")
-    public ModelAndView showChangePasswordPage(final ModelMap model, @RequestParam("token") final String token) {
-        final String result = securityUserService.validatePasswordResetToken(token);
-
-        if(result != null) {
-            String messageKey = "auth.message." + result;
-            model.addAttribute("messageKey", messageKey);
-            return new ModelAndView("redirect:/login", model);
-        } else {
-            model.addAttribute("token", token);
-            return new ModelAndView("redirect:/updatePassword");
-        }
-    }
-
-    @GetMapping("/updatePassword")
-    public ModelAndView updatePassword(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey" ) final Optional<String> messageKey) {
-        Locale locale = request.getLocale();
-        model.addAttribute("lang", locale.getLanguage());
-        messageKey.ifPresent( key -> {
-                    String message = messages.getMessage(key, null, locale);
-                    model.addAttribute("message", message);
-                }
-        );
-
-        return new ModelAndView("updatePassword", model);
-    }
 
     @GetMapping("/login")
     public ModelAndView login(final HttpServletRequest request, final ModelMap model, @RequestParam("messageKey" ) final Optional<String> messageKey, @RequestParam("error" ) final Optional<String> error) {
@@ -109,14 +76,4 @@ public class RegistrationController {
         return new ModelAndView("login", model);
     }
 
-    @RequestMapping(value = "/user/enableNewLoc", method = RequestMethod.GET)
-    public String enableNewLoc(Locale locale, Model model, @RequestParam("token") String token) {
-        final String loc = userService.isValidNewLocationToken(token);
-        if (loc != null) {
-            model.addAttribute("message", messages.getMessage("message.newLoc.enabled", new Object[] { loc }, locale));
-        } else {
-            model.addAttribute("message", messages.getMessage("message.error", null, locale));
-        }
-        return "redirect:/login?lang=" + locale.getLanguage();
-    }
 }

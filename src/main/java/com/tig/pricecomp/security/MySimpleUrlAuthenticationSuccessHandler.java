@@ -1,7 +1,6 @@
 package com.tig.pricecomp.security;
 
 import com.tig.pricecomp.persistence.model.User;
-import com.tig.pricecomp.service.DeviceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +27,6 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
 
     @Autowired
     ActiveUserStore activeUserStore;
-
-    @Autowired
-    private DeviceService deviceService;
 
     @Autowired
     private Environment env;

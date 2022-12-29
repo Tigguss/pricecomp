@@ -16,13 +16,8 @@ public interface IUserService {
 
     void deleteUser(User user);
 
-    void createPasswordResetTokenForUser(User user, String token);
 
     User findUserByEmail(String email);
-
-    PasswordResetToken getPasswordResetToken(String token);
-
-    Optional<User> getUserByPasswordResetToken(String token);
 
     Optional<User> getUserByID(long id);
 
@@ -32,11 +27,7 @@ public interface IUserService {
 
     String generateQRUrl(User user) throws UnsupportedEncodingException;
 
-    User updateUser2FA(boolean use2FA);
-
     List<String> getUsersFromSessionRegistry();
 
-    String isValidNewLocationToken(String token);
 
-    void addUserLocation(User user, String ip);
 }
