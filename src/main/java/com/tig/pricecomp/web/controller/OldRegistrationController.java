@@ -1,6 +1,5 @@
 package com.tig.pricecomp.web.controller;
 
-import com.tig.pricecomp.persistence.model.PasswordResetToken;
 import com.tig.pricecomp.persistence.model.User;
 import com.tig.pricecomp.service.IUserService;
 import com.tig.pricecomp.web.dto.UserDto;

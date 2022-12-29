@@ -27,8 +27,6 @@ public class User {
 
     private boolean enabled;
 
-    private boolean isUsing2FA;
-
     private String secret;
 
     //
